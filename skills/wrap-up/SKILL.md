@@ -28,16 +28,27 @@ Report the status of each service, or "No updates needed" for services unaffecte
 
 ## 3. Memory Review
 
-Review the conversation for anything worth persisting to memory. Check each category:
+Review the conversation for anything worth persisting to memory. Start with the user — what did you learn about *them* this session?
 
-- **User preferences**: Did the user express any new preferences about how they like to work, communicate, or receive help?
-- **Feedback**: Did the user correct your approach in a way that should apply to future sessions? (e.g., "don't do X", "always do Y")
+**About the user (save to global memory):**
+- **Working style**: Did you observe how the user prefers to approach problems? (e.g., research-first, prefers incremental over big-bang, wants control at checkpoints)
+- **Design philosophy**: Did the user reveal values or principles that guide their decisions? (e.g., tool-agnostic, publishable by default, AI-first)
+- **Preferences**: Did the user express how they like to work, communicate, or receive help?
+- **Feedback**: Did the user correct your approach in a way that should apply to future sessions? (e.g., "don't do X", "always do Y"). Also capture *confirmed* approaches — when a non-obvious choice worked and the user validated it.
+
+**About the project (save to project memory):**
 - **Project context**: Did you learn about ongoing work, goals, deadlines, or decisions not captured in code/git?
 - **References**: Did the user mention external resources, dashboards, docs, or tracking systems?
 
+Memories have two scopes:
+- **Project-scoped** (`~/.claude/projects/<project>/memory/`) — project context, references, project-specific patterns
+- **Global** (`~/.claude/memory/`) — user preferences, feedback, working style, anything that applies across all projects
+
+**Routing rule:** `user` and `feedback` type memories go to global memory by default. `project` and `reference` type memories go to project memory. If unsure, ask: "does this apply to just this project, or everywhere?"
+
 For each potential memory:
-1. Check if it already exists (read MEMORY.md index)
-2. If new — create the memory file and update MEMORY.md
+1. Check if it already exists in the appropriate MEMORY.md index (project or global)
+2. If new — create the memory file in the correct location and update its MEMORY.md
 3. If updating — modify the existing memory file
 4. If nothing new — report "No new memories to save"
 
