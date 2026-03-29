@@ -7,6 +7,7 @@ Shared skill library for [Claude Code](https://claude.ai/claude-code). Install g
 | Command | Description |
 |---------|-------------|
 | `/wrap-up` | End-of-session checklist — commits & pushes uncommitted work, checks service deployments (Vercel, Sanity, Supabase), reviews conversation for memories to persist, updates CLAUDE.md, marks completed checklist items, captures deferred work to backlog, and presents a scannable summary |
+| `/catch-up` | Load context about what changed across your projects — recent commits, agent activity, deployments, migrations. Configurable adapters (git, Paperclip, Vercel, Supabase). Zero-config default works with just git. Supports `--all`, `--full`, time windows, and named repos |
 | `/memory-dream` | Memory consolidation — merges near-duplicates, prunes stale entries, clusters related feedback, cross-references CLAUDE.md. Auto mode by default (plan-and-wait on first run) |
 
 ## Install
