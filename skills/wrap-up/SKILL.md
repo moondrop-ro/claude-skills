@@ -106,7 +106,33 @@ Review the session for potential backlog items — deferred work, rolled-back fe
 3. **Append approved items** to `BACKLOG.md` in the project root, grouped under an appropriate category heading. Use `- [ ]` checkbox format.
 4. Don't add items that are already in the backlog.
 
-## 8. Session Summary
+## 8. Client Decision Log
+
+Review the session for product, design, and technical decisions that the client should know about. If decisions were made, write a client-facing decision log.
+
+**Skip if:** The session was pure implementation with no decisions (just coding what was already decided), or only involved internal cleanup/refactoring with no client-visible impact.
+
+**When to write:**
+- Design choices were made (layout, interaction, visual direction)
+- Scope was expanded, reduced, or deferred
+- Technical tradeoffs were discussed that affect the product
+- Features were cut or reprioritized
+- Strategy or approach changed from what was previously planned
+
+**How to write:**
+
+1. Create `docs/decisions/YYYY-MM-DD-<topic>.md` (create `docs/decisions/` if it doesn't exist)
+2. For each decision, capture:
+   - **What was decided** — the choice made
+   - **Alternatives considered** — what else was on the table
+   - **Why this choice** — connected to business goals, user needs, or stakeholder priorities. Reference stakeholders by name where relevant.
+3. Group decisions by category: Strategy, Design, Technical, Deferred
+4. Format for client readability: no jargon, no internal tool names, no framework specifics. Write as if the reader is a smart business person who cares about their product but doesn't code.
+5. Include a review summary if professional reviews (CEO, eng, design) were run during the session
+
+**Present to the user:** "I found N decisions from this session. Writing the client decision log to `docs/decisions/...`. Want to review before I save?"
+
+## 9. Session Summary
 
 Provide a brief summary:
 - **What was done**: 2-3 bullet points of the main work completed
@@ -144,6 +170,9 @@ Present all findings in a single, scannable report. Use this structure:
 
 ### Backlog
 - [proposed items or "nothing to add"]
+
+### Client Decision Log
+- [written to docs/decisions/... / no decisions this session]
 
 ### Summary
 - Done: ...
