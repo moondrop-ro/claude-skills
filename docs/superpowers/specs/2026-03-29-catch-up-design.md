@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-29
 **Status:** Draft
-**Repo:** claude-skills
+**Repo:** moondrop-skills
 
 ## Purpose
 

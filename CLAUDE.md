@@ -1,14 +1,14 @@
-# claude-skills
+# moondrop-skills
 
 Shared skill library for Claude Code. Skills install to `~/.claude/skills/` (global) or `<project>/.claude/skills/` (per-project) and are invoked as slash commands.
 
-**Repo**: `https://github.com/moondrop-ro/claude-skills`
+**Repo**: `https://github.com/moondrop-ro/moondrop-skills`
 **Owner**: moondrop-ro
 
 ## Architecture
 
 ```
-claude-skills/
+moondrop-skills/
 ├── VERSION              # Semver, single line (e.g. "0.1.0")
 ├── CHANGELOG.md         # Release notes, one ## heading per version
 ├── install.sh           # Copies skills/ to target dir + VERSION into each skill
@@ -68,16 +68,16 @@ Description paragraph for humans reading the file.
 
 Every skill includes a `## Preamble — Version Check` section that runs before the skill starts. The flow:
 
-1. Check `~/.claude-skills/update-check` — skip if set to `false`
-2. Check `~/.claude-skills/update-snoozed` — skip if within snooze window
+1. Check `~/.moondrop-skills/update-check` — skip if set to `false`
+2. Check `~/.moondrop-skills/update-snoozed` — skip if within snooze window
 3. Read installed version from `~/.claude/skills/<skill-name>/VERSION`
-4. Check cache at `~/.claude-skills/last-update-check` (24h TTL)
+4. Check cache at `~/.moondrop-skills/last-update-check` (24h TTL)
 5. If cache expired: find the git repo, `git fetch origin`, compare `origin/main:VERSION` against installed
 6. If update available: read `origin/main:CHANGELOG.md`, compose a 20-word summary of what's new
 7. Prompt user with AskUserQuestion (or auto-upgrade if enabled)
 8. On upgrade: `git pull`, `bash install.sh`, show full changelog summary
 
-### State files (in `~/.claude-skills/`)
+### State files (in `~/.moondrop-skills/`)
 
 | File | Purpose |
 |------|---------|

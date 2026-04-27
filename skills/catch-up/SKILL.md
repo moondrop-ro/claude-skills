@@ -56,23 +56,23 @@ Load context about what happened across the user's projects since they last chec
 
 ## Preamble — Version Check
 
-Before starting the skill, check if claude-skills has an update available. This should be fast and non-blocking — use cached results when possible.
+Before starting the skill, check if moondrop-skills has an update available. This should be fast and non-blocking — use cached results when possible.
 
 ```bash
-_CS_STATE="$HOME/.claude-skills"
-mkdir -p "$_CS_STATE"
+_MS_STATE="$HOME/.moondrop-skills"
+mkdir -p "$_MS_STATE"
 
 # Skip if checks disabled
-if [ -f "$_CS_STATE/update-check" ] && [ "$(cat "$_CS_STATE/update-check")" = "false" ]; then
+if [ -f "$_MS_STATE/update-check" ] && [ "$(cat "$_MS_STATE/update-check")" = "false" ]; then
   echo "UPDATE_CHECK_DISABLED"
   exit 0
 fi
 
 # Skip if snoozed
-if [ -f "$_CS_STATE/update-snoozed" ]; then
-  _SV=$(awk '{print $1}' "$_CS_STATE/update-snoozed")
-  _SL=$(awk '{print $2}' "$_CS_STATE/update-snoozed")
-  _ST=$(awk '{print $3}' "$_CS_STATE/update-snoozed")
+if [ -f "$_MS_STATE/update-snoozed" ]; then
+  _SV=$(awk '{print $1}' "$_MS_STATE/update-snoozed")
+  _SL=$(awk '{print $2}' "$_MS_STATE/update-snoozed")
+  _ST=$(awk '{print $3}' "$_MS_STATE/update-snoozed")
   _NOW=$(date +%s)
   case "$_SL" in 1) _D=86400;; 2) _D=172800;; *) _D=604800;; esac
   if [ $((_NOW - _ST)) -lt "$_D" ]; then
@@ -85,7 +85,7 @@ fi
 _INSTALLED=$(cat "$HOME/.claude/skills/catch-up/VERSION" 2>/dev/null || echo "0.0.0")
 
 # Use cache if fresh (24h TTL)
-_CACHE="$_CS_STATE/last-update-check"
+_CACHE="$_MS_STATE/last-update-check"
 if [ -f "$_CACHE" ]; then
   _CT=$(awk 'NR==1{print $1}' "$_CACHE")
   _NOW=$(date +%s)
@@ -96,23 +96,23 @@ if [ -f "$_CACHE" ]; then
 fi
 
 # Find repo and fetch
-_CS_REPO=""
-for _C in "$HOME/.claude-skills/repo" "$HOME/claude-skills" "$HOME/projects/claude-skills" "$HOME/dev/claude-skills" "$HOME/src/claude-skills" "$HOME/code/claude-skills"; do
-  [ -d "$_C/.git" ] && _CS_REPO="$_C" && break
+_MS_REPO=""
+for _C in "$HOME/.moondrop-skills/repo" "$HOME/moondrop-skills" "$HOME/projects/moondrop-skills" "$HOME/dev/moondrop-skills" "$HOME/src/moondrop-skills" "$HOME/code/moondrop-skills"; do
+  [ -d "$_C/.git" ] && _MS_REPO="$_C" && break
 done
 
-if [ -z "$_CS_REPO" ]; then
+if [ -z "$_MS_REPO" ]; then
   echo "NO_REPO"
   exit 0
 fi
 
-cd "$_CS_REPO"
+cd "$_MS_REPO"
 git fetch origin --quiet 2>/dev/null
 _REMOTE=$(git show origin/main:VERSION 2>/dev/null | tr -d '[:space:]')
 _NOW=$(date +%s)
 
 if [ -n "$_REMOTE" ] && [ "$_INSTALLED" != "$_REMOTE" ]; then
-  _RESULT="UPGRADE_AVAILABLE $_INSTALLED $_REMOTE $_CS_REPO"
+  _RESULT="UPGRADE_AVAILABLE $_INSTALLED $_REMOTE $_MS_REPO"
 else
   _RESULT="UP_TO_DATE $_INSTALLED"
 fi
@@ -133,22 +133,22 @@ From the changelog, extract changes between v{old} and v{new}. Compose a **one-l
 Check auto-upgrade preference:
 ```bash
 _AUTO=""
-[ -f "$HOME/.claude-skills/auto-upgrade" ] && _AUTO=$(cat "$HOME/.claude-skills/auto-upgrade")
+[ -f "$HOME/.moondrop-skills/auto-upgrade" ] && _AUTO=$(cat "$HOME/.moondrop-skills/auto-upgrade")
 echo "AUTO_UPGRADE=$_AUTO"
 ```
 
-**If `AUTO_UPGRADE=true`:** Log "Auto-upgrading claude-skills v{old} -> v{new}... ({whats_new})" and run the upgrade (see below). If it fails, warn and continue with the skill.
+**If `AUTO_UPGRADE=true`:** Log "Auto-upgrading moondrop-skills v{old} -> v{new}... ({whats_new})" and run the upgrade (see below). If it fails, warn and continue with the skill.
 
 **Otherwise**, use AskUserQuestion:
-- Question: "claude-skills **v{new}** is available (you're on v{old}): *{whats_new}*. Upgrade now?"
+- Question: "moondrop-skills **v{new}** is available (you're on v{old}): *{whats_new}*. Upgrade now?"
 - Options: ["Yes, upgrade now", "Always keep me up to date", "Not now", "Never ask again"]
 
 | Response | Action |
 |----------|--------|
 | **Yes, upgrade now** | Run upgrade below |
-| **Always keep me up to date** | `echo "true" > "$HOME/.claude-skills/auto-upgrade"` — tell user auto-upgrade enabled, then run upgrade |
-| **Not now** | Write snooze: `echo "{new} {level} $(date +%s)" > "$HOME/.claude-skills/update-snoozed"` (level 1=24h, 2=48h, 3+=1wk). Tell user when next reminder will be. Continue with the skill. |
-| **Never ask again** | `echo "false" > "$HOME/.claude-skills/update-check"` — tell user checks disabled. Continue with the skill. |
+| **Always keep me up to date** | `echo "true" > "$HOME/.moondrop-skills/auto-upgrade"` — tell user auto-upgrade enabled, then run upgrade |
+| **Not now** | Write snooze: `echo "{new} {level} $(date +%s)" > "$HOME/.moondrop-skills/update-snoozed"` (level 1=24h, 2=48h, 3+=1wk). Tell user when next reminder will be. Continue with the skill. |
+| **Never ask again** | `echo "false" > "$HOME/.moondrop-skills/update-check"` — tell user checks disabled. Continue with the skill. |
 
 **Upgrade steps:**
 ```bash
@@ -157,13 +157,13 @@ _OLD=$(cat VERSION 2>/dev/null || echo "unknown")
 git stash 2>&1
 git pull origin main --ff-only 2>&1 || git reset --hard origin/main
 bash install.sh
-rm -f "$HOME/.claude-skills/update-snoozed"
-echo "$_OLD" > "$HOME/.claude-skills/just-upgraded-from"
+rm -f "$HOME/.moondrop-skills/update-snoozed"
+echo "$_OLD" > "$HOME/.moondrop-skills/just-upgraded-from"
 ```
 
 After upgrading, read `{repo}/CHANGELOG.md`, summarize changes between old and new versions as 3-7 bullets, then display:
 ```
-claude-skills v{new} — upgraded from v{old}!
+moondrop-skills v{new} — upgraded from v{old}!
 
 What's new:
 - ...

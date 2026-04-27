@@ -82,8 +82,8 @@ Over time, Claude Code accumulates memory files — observations about you, your
 Skills go to `~/.claude/skills/` and are available in every Claude Code session.
 
 ```bash
-git clone https://github.com/moondrop-ro/claude-skills.git
-cd claude-skills
+git clone https://github.com/moondrop-ro/moondrop-skills.git
+cd moondrop-skills
 bash install.sh
 ```
 
@@ -92,8 +92,8 @@ bash install.sh
 Skills go to `<project>/.claude/skills/` and are only available in that project.
 
 ```bash
-git clone https://github.com/moondrop-ro/claude-skills.git
-cd claude-skills
+git clone https://github.com/moondrop-ro/moondrop-skills.git
+cd moondrop-skills
 bash install.sh --project /path/to/your/project
 ```
 
@@ -115,18 +115,18 @@ Every skill checks for updates automatically when invoked. If a new version is a
 - **Not now** — snoozes with escalating backoff (24h, 48h, 1 week)
 - **Never ask again** — disables update checks
 
-Preferences are stored in `~/.claude-skills/` and can be changed manually:
+Preferences are stored in `~/.moondrop-skills/` and can be changed manually:
 
 ```bash
-echo true > ~/.claude-skills/auto-upgrade     # Enable auto-upgrade
-echo false > ~/.claude-skills/update-check    # Disable update checks
-rm ~/.claude-skills/update-check              # Re-enable update checks
+echo true > ~/.moondrop-skills/auto-upgrade     # Enable auto-upgrade
+echo false > ~/.moondrop-skills/update-check    # Disable update checks
+rm ~/.moondrop-skills/update-check              # Re-enable update checks
 ```
 
 Manual update:
 
 ```bash
-cd claude-skills && git pull && bash install.sh
+cd moondrop-skills && git pull && bash install.sh
 ```
 
 ## Adding Skills
