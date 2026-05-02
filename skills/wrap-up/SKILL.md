@@ -1,6 +1,6 @@
 ---
 name: wrap-up
-version: 0.1.0
+version: 0.2.0
 description: >
   End-of-session checklist — commits & pushes uncommitted work, checks service
   deployments (Vercel, Sanity, Supabase), surfaces what it learned about you,
@@ -12,6 +12,8 @@ description: >
 # /wrap-up
 
 > **Session Wrap-Up** — Never leave a session with loose ends.
+
+> _Source: [moondrop-skills](https://github.com/moondrop-ro/moondrop-skills) — the user's personal skill library at `D:\projects\moondrop-skills`. Distinct from any gstack-shipped skill of the same name; do not overwrite during third-party skill-pack reinstalls._
 
 Everything that should happen before you close a session, automated into one command. `/wrap-up` handles the boring-but-critical end-of-session hygiene so nothing falls through the cracks.
 
@@ -318,6 +320,88 @@ Review the session for product, design, and technical decisions that the client 
 
 **Present to the user:** "I found N decisions from this session. Writing the client decision log to `docs/decisions/...`. Want to review before I save?"
 
+## 8.5 Next-Session Handoff Prompt
+
+For multi-session work, the next session needs a self-contained kickoff prompt — read order, open work units, pending decisions, held items, verification gaps, and just-learned workflow lessons — written to a file (not dumped in terminal where it's hard to copy).
+
+**Trigger gate.** Only generate this section if at least one is true:
+- `git worktree list` shows >1 worktree (uncommitted parallel work)
+- An active plan in `docs/plans/*.md` has unchecked items the session worked on
+- The session ended on an explicit pending decision ("stop here, regroup", "checkpoint before next wave")
+- Held items / verification gaps were raised but not landed
+
+If none are true, **skip this step silently** — small single-session wraps don't need a handoff doc; the Session Summary covers them.
+
+**How to write.**
+
+1. Create `docs/handoffs/YYYY-MM-DD-<topic>.md` (create `docs/handoffs/` if it doesn't exist). Use the same `<topic>` slug as the related plan or decision doc when one exists.
+2. Lead with a `# <Topic> — pick up from YYYY-MM-DD wrap-up` H1 and a 2–3 sentence "## State at hand-off" paragraph. No fluff. What's signed off, what's mid-flight, what's pushed vs uncommitted.
+3. Use the section structure below. **Skip any section that has nothing to put in it** — empty sections are noise.
+
+**Template:**
+
+```markdown
+# <Topic> — pick up from <YYYY-MM-DD> wrap-up
+
+## State at hand-off
+
+<2–3 sentences: what's signed off, what's mid-flight, what's pushed vs uncommitted.>
+
+## Read order (before any action)
+
+1. `path/to/file` — why this matters
+2. `path/to/file` — why this matters
+...
+
+## Open work units
+
+| Lane / unit | Branch | Path / location | What's in it | Status |
+|---|---|---|---|---|
+| ... | ... | ... | ... | uncommitted / pushed / merged |
+
+(Generic for worktrees, in-flight PRs, dirty branches. Drop columns that don't apply.)
+
+## Pending decisions (in order of dependency)
+
+1. **<Decision name>.** <One paragraph: what's at stake, the options, what depends on it.>
+2. ...
+
+## Held items (NOT backlog — surfaced for next-wave decision)
+
+- <Item> — <why it's held, not deferred. Estimate to fix if applicable.>
+
+## Verification gaps
+
+- <Gap> — <blocker that prevented verification + the fix to unblock>
+
+## Workflow expectations (lessons from this session)
+
+- <Lesson learned this session that next-session should carry forward. Only the new ones — durable preferences belong in memory, not here.>
+
+## Suggested first action
+
+<One paragraph. Concrete first command, decision, or dispatch — not a phase plan.>
+```
+
+**Section rules:**
+- **Read order** — paths with one-line "why" each. No multi-paragraph entries. Cap at ~6 entries.
+- **Open work units** — table form. Drop columns that don't apply (e.g., no "Path" column if not using worktrees).
+- **Pending decisions** — numbered, ordered by dependency (decision 2 depends on decision 1's outcome). This is the highest-value section; spend the most words here.
+- **Held items** — explicitly tagged `(NOT backlog — surfaced for next-wave decision)` to short-circuit the "why isn't this in BACKLOG.md" question. Distinct from BACKLOG.md cruft: these are decisions the user chose to hold mid-stream, not deferred work.
+- **Verification gaps** — pair the *blocker* with the *fix*. "Untested" alone is not enough; "untested — needs `.env.local` first via `vercel env pull`" is.
+- **Workflow expectations** — only the lessons that surfaced **this session**. Skip the section entirely if nothing new. Durable preferences (always-true rules) belong in memory files / CLAUDE.md, not here.
+- **Suggested first action** — single paragraph, concrete first command/decision. Not a phase plan. The next session reads this and knows what to do in their first 5 minutes.
+
+**Skip everything that's discoverable.**
+- Don't include "current branch is X" — `git status` shows that.
+- Don't include file inventories — the Open work units table covers it.
+- Don't re-quote CLAUDE.md rules — link the line numbers.
+- Don't restate decisions already captured in `docs/decisions/...` — link them.
+
+**Present to the user:** "Multi-session work in flight. Writing handoff prompt to `docs/handoffs/YYYY-MM-DD-<topic>.md` so next session can pick up cleanly. Open it tomorrow, paste the first paragraph or `@`-reference the file."
+
+After writing, report the path. Don't dump the contents in terminal — the whole point is to avoid that.
+
 ## 9. Session Summary
 
 Provide a brief summary:
@@ -329,7 +413,7 @@ Provide a brief summary:
 
 Present the report, then the two interactive selectors, then the summary. The flow is:
 
-1. **Report** (text) — Git, Services, CLAUDE.md, Checklists, Project Memory, Client Decision Log
+1. **Report** (text) — Git, Services, CLAUDE.md, Checklists, Project Memory, Client Decision Log, Handoff Prompt (if generated)
 2. **Interactive selectors** (AskUserQuestion) — "What I Learned" + "Backlog" as two multi-select questions in a single AskUserQuestion call. Each question uses `multiSelect: true`. Combine both into one call so the user sees them together.
 3. **Process selections** — save approved memories, append approved backlog items
 4. **Summary** (text) — Done, Next, Open
@@ -358,6 +442,9 @@ Present the report, then the two interactive selectors, then the summary. The fl
 
 ### Client Decision Log
 - [written to docs/decisions/... / no decisions this session]
+
+### Handoff Prompt
+- [written to docs/handoffs/... / not needed — single-session wrap]
 
 [AskUserQuestion with up to 2 multi-select questions:
   Q1 header:"Remember" — "What should I remember about you?" — insights as options

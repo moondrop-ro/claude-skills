@@ -16,9 +16,6 @@ moondrop-skills/
 └── skills/
     ├── wrap-up/         # /wrap-up — end-of-session checklist
     │   └── SKILL.md
-    ├── catch-up/        # /catch-up — start-of-session context loading
-    │   ├── SKILL.md
-    │   └── adapters/    # Pluggable data sources (git.md, vercel.md, etc.)
     └── memory-dream/    # /memory-dream — memory consolidation
         └── SKILL.md
 ```

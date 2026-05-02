@@ -29,30 +29,6 @@ Everything that should happen before you close a session, automated into one com
 
 ---
 
-## `/catch-up` — Start With Full Context
-
-> Start every session with full awareness.
-
-When you open a new session, Claude has no idea what happened since last time. `/catch-up` loads recent commits, agent activity, deployments, and migrations so Claude works with full context from the first message.
-
-| Source | What it checks |
-|--------|---------------|
-| Git | Commits, branches, merges, tags since last check |
-| Paperclip | Agent activity — tasks completed, in progress, blocked |
-| Vercel | Recent deployments, status, failures |
-| Supabase | Database migrations applied or pending |
-
-```
-/catch-up                          # Current repo, since last check
-/catch-up 3d                       # Last 3 days
-/catch-up --all                    # All registered repos
-/catch-up ops moon-drop            # Named repos only
-```
-
-Zero-config works out of the box (git only). For multi-repo setups, create `~/.claude/catch-up.json`.
-
----
-
 ## `/memory-dream` — Memory Consolidation
 
 > Defragment your AI's memory.
